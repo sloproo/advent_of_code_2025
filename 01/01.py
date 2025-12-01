@@ -14,7 +14,6 @@ nollia = 0
 muita = 0
 
 with open("input.txt") as f:
-    print(f"Lähtötilanne on {taulu}")
     for r in f:
         vanha = taulu
         taulu = rotate(r.strip(), taulu) % 100
@@ -23,12 +22,9 @@ with open("input.txt") as f:
         else:
             muita += 1
         
-        print(f"Käännetään {vanha} - {r.strip()} = {taulu}")
-        # print(f"Nollia = {nollia}")
+        # print(f"Käännetään {vanha} - {r.strip()} = {taulu}")
         
-print(f"\n\nLoppu")
-print(f"Nollia oli {nollia}")
-print(f"Muita oli {muita}")
+print(f"\nNollia oli {nollia}")
     
     
         
