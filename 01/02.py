@@ -1,5 +1,3 @@
-import time
-
 def rotate(pyor :str, alku: int) -> tuple[int, int]:
     suunta = pyor[0]
     if suunta == "R":
