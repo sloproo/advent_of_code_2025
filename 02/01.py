@@ -9,5 +9,5 @@ for raja in rajat:
         if id[:len(id) // 2] == id[len(id) // 2:]:
             vialliset.append(int(id))
 
-print(f"Vialliset ID:t {vialliset}")
+# print(f"Vialliset ID:t {vialliset}")
 print(f"Viallisten ID:iden summa: {sum(vialliset)}")
