@@ -1,20 +1,21 @@
-def joltit(akusto: str) -> str:
+def laske_joltit(akut: str) -> str:
     joltit = ""
-    jatkopaikka = -1
-    for paikka in range(0, 12):
-        if len(akusto) == 12 - paikka:
-            joltit += akusto
+    for paikka in range(1, 13):
+        jaljella = 12 - paikka
+        if len(akut) == jaljella:
+            joltit += akut
             return joltit
         for i in range(9, 0, -1):
-            if (jatkopaikka := akusto[:-(10 - paikka)].find(str(i))) >= 0:
+            jatkopaikka = akut.find(str(i))
+            if jatkopaikka != -1 and jatkopaikka < len(akut)  -jaljella:
                 joltit += str(i)
-                akusto = akusto[jatkopaikka +1:]
+                akut = akut[jatkopaikka +1:]
                 break
-            pass
-    return joltit
+    return int(joltit)
 
-
-with open("alku.txt") as f:
+kaikki = 0
+with open("input.txt") as f:
     for r in f:
-        print(f"{joltit(r.strip())}")
+        kaikki += laske_joltit(r.strip())
 
+print(f"Jolttien summa on: {kaikki}")
