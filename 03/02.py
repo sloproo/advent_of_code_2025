@@ -7,7 +7,7 @@ def laske_joltit(akut: str) -> str:
             return joltit
         for i in range(9, 0, -1):
             jatkopaikka = akut.find(str(i))
-            if jatkopaikka != -1 and jatkopaikka < len(akut)  -jaljella:
+            if jatkopaikka != -1 and jatkopaikka < len(akut) - jaljella:
                 joltit += str(i)
                 akut = akut[jatkopaikka +1:]
                 break
