@@ -1,3 +1,5 @@
+import time
+
 def lue(tiedosto: str) -> list:
     with open(tiedosto) as f:
         ruudukko = []
@@ -22,10 +24,19 @@ def siivoa(ruudukko: list, saavutettavat: list) -> list:
         ruudukko[y][x] = "."
     return ruudukko
 
-ruudukko = lue("alku.txt")
+def tulosta(ruudukko: list):
+    tuloste = ""
+    for r in ruudukko:
+        tuloste += "".join(r) + "\n"
+    print(tuloste)
+
+
+ruudukko = lue("input.txt")
 poistettuja = 0
 
 while True:
+    # tulosta(ruudukko)
+    # time.sleep(0.5)
     saavutettavat = []
     for y in range(len(ruudukko)):
         for x in range(len(ruudukko[0])):
@@ -38,7 +49,7 @@ while True:
             if tukittuja < 4:
                 saavutettavat.append((x, y))
 
-    print(f"Saavutettavia rullia on {len(saavutettavat)}")
+    # print(f"Saavutettavia rullia on {len(saavutettavat)}")
     if saavutettavat == []:
         break
     ruudukko = siivoa(ruudukko, saavutettavat)
