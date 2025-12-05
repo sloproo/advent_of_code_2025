@@ -1,4 +1,4 @@
-with open("alku.txt") as f:
+with open("input.txt") as f:
     tuoreiden_rajat = []
     ainekset = []
     for r in f:
@@ -13,8 +13,8 @@ for alku, loppu in tuoreiden_rajat:
         uusi_loppu = siivottu_loppu
         if alku < siivottu_alku and alku < siivottu_loppu and loppu >= siivottu_alku:
             uusi_alku = alku
-            if loppu > siivottu_loppu and loppu > siivottu_alku and alku <= siivottu_loppu:
-                uusi_loppu = loppu
+        if loppu > siivottu_loppu and loppu > siivottu_alku and alku <= siivottu_loppu:
+            uusi_loppu = loppu
         if uusi_alku != siivottu_alku or uusi_loppu != siivottu_loppu:
             siivotut_tuoreet.remove((siivottu_alku, siivottu_loppu))
             siivotut_tuoreet.append((uusi_alku, uusi_loppu))
@@ -24,3 +24,11 @@ for alku, loppu in tuoreiden_rajat:
       
 
 print(siivotut_tuoreet)
+siivotut_tuoreet.sort()
+print(siivotut_tuoreet)
+
+muutoksia = True
+while muutoksia:
+    muutoksia = False
+    for i in range(len(siivotut_tuoreet)):
+        pass
