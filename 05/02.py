@@ -1,34 +1,34 @@
 with open("input.txt") as f:
-    tuoreiden_rajat = []
-    ainekset = []
+    rajat = []
     for r in f:
         if r == "\n":
             break
-        tuoreiden_rajat.append(tuple((int(luku) for luku in r.strip().split("-"))))
+        rajat.append(tuple((int(luku) for luku in r.strip().split("-"))))
 
-siivotut_tuoreet = []
-for alku, loppu in tuoreiden_rajat:
-    for siivottu_alku, siivottu_loppu in siivotut_tuoreet:
-        uusi_alku = siivottu_alku
-        uusi_loppu = siivottu_loppu
-        if alku < siivottu_alku and alku < siivottu_loppu and loppu >= siivottu_alku:
-            uusi_alku = alku
-        if loppu > siivottu_loppu and loppu > siivottu_alku and alku <= siivottu_loppu:
-            uusi_loppu = loppu
-        if uusi_alku != siivottu_alku or uusi_loppu != siivottu_loppu:
-            siivotut_tuoreet.remove((siivottu_alku, siivottu_loppu))
-            siivotut_tuoreet.append((uusi_alku, uusi_loppu))
-            break
-    else:
-        siivotut_tuoreet.append((alku, loppu))
-      
-
-print(siivotut_tuoreet)
-siivotut_tuoreet.sort()
-print(siivotut_tuoreet)
+rajat.sort()
 
 muutoksia = True
 while muutoksia:
     muutoksia = False
-    for i in range(len(siivotut_tuoreet)):
-        pass
+    yhdistetyt = [rajat[0]]
+    for i in range(1, len(rajat)):
+        eka = rajat[i][0]
+        toka = rajat[i][1]
+        if yhdistetyt[-1][1] + 1 >= eka:
+            print(f"Yhdistetään {yhdistetyt[-1]} ja {rajat[i]}")
+            eka = min(yhdistetyt[-1][0], eka)
+            toka = max(yhdistetyt[-1][1], toka)
+            yhdistetyt[-1] = (eka, toka)
+            muutoksia = True
+        else:
+            print(f"{yhdistetyt[-1]} ja {rajat[i]} eivät leikkaa, lisätään jälkimmäinen")
+            yhdistetyt.append(rajat[i])
+    rajat = yhdistetyt.copy()
+    print("Oli muutoksia")
+
+tuoreita = 0
+for alue in yhdistetyt:
+    # print(f"Alueelta {alue[0]} - {alue[1]} tulee tuoreita yhteensä {alue[1] - alue[0] + 1}")
+    tuoreita += alue[1] - alue[0] + 1
+
+print(f"Tuoreita mahdollisia ID:itä on: {tuoreita}")
