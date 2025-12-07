@@ -11,8 +11,6 @@ def halkaisu(jakaja:list, x: int, y: int, kaydyt: dict) -> int:
     return 1
     
 with open("input.txt") as f:
-    jakaja =[]
-    for r in f:
-        jakaja.append(r.strip())
+    jakaja =[r.strip() for r in f]
 
 print(halkaisu(jakaja, jakaja[0].find("S"), 0, {}))

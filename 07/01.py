@@ -1,7 +1,5 @@
 with open("input.txt") as f:
-    jakaja =[]
-    for r in f:
-        jakaja.append(r.strip())
+    jakaja =[r.strip() for r in f]
 
 sateet = {jakaja[0].find("S")}
 halkaisuja = 0
@@ -18,4 +16,3 @@ for r in jakaja:
 
 print(halkaisuja)
     
-
