@@ -112,7 +112,7 @@ if __name__ == "__main__":
     print(f"Huh, kaikki käyty läpi ja suurin ala on {suurin_ala}")
 
 
-
+# 4598136816 liian iso
 
 
 
