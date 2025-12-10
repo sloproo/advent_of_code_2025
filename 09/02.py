@@ -110,7 +110,7 @@ def onko_mahdollinen(eka: tuple[int, int], toka: tuple[int, int], kulmat: list,
 
 
 if __name__ == "__main__":
-    tiedosto = "alku.txt"
+    tiedosto = "input.txt"
     kulmat = lue_kulmat(tiedosto)
     janat = tee_janat(kulmat)
     max_x, max_y = maksimit(kulmat)
