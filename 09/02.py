@@ -125,8 +125,8 @@ if __name__ == "__main__":
 
     for i in range(len(alat)):
         piste_1, piste_2 = alat[i][0:2]
-        print(f"Käydään läpi kulmayhdistelmä #{i}, suurin ala tähän asti "
-              + f"on {suurin_ala}")
+        # print(f"Käydään läpi kulmayhdistelmä #{i}, suurin ala tähän asti "
+            #   + f"on {suurin_ala}")
         if not onko_mahdollinen(piste_1, piste_2, kulmat, janat, max_x, max_y):
             continue
         else:
@@ -134,5 +134,5 @@ if __name__ == "__main__":
             if nykyisen_ala > suurin_ala:
                 print(f"Löytyi uusin suurin ala, {piste_1} - {piste_2}")
                 suurin_ala = nykyisen_ala
-    
-    print(f"Huh, kaikki käyty läpi ja suurin ala on {suurin_ala}")
+                print(f"Niiden ala on {suurin_ala}")
+                break
