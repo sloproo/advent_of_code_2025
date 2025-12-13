@@ -29,6 +29,7 @@ def syvemmalle(portti: str, portit: dict, ratkaistut: dict, kaydyt: list) -> tup
         reitteja = 0
         for maali in portit[portti]:
             if maali in uudet_kaydyt:
+                print("Nyt kävi näin")
                 continue
             else:
                 uusia, ratkaistut = syvemmalle(maali, portit, ratkaistut, uudet_kaydyt)

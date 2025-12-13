@@ -5,6 +5,8 @@ rap.py
 rapl.py
 .gitignore
 .vscode/
+lisat/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

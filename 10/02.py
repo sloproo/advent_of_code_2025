@@ -1,4 +1,5 @@
 import itertools
+from ortools.linear_solver import pywraplp
 
 def lue(tiedosto: str) -> list:
     koneet = []
@@ -17,6 +18,17 @@ def lue(tiedosto: str) -> list:
             joltit = [int(i) for i in r[-1][1:-1].split(",")]
             koneet.append({"valot": valot, "napit": napit, "joltit": joltit})
     return koneet
+
+def matriisiksi(napit: list[list[int]], joltit: list[int]) -> tuple[list[list], list[int]]:
+    matriisi = []
+    for nappi in napit:
+        matriisi.append([1 if i in nappi else 0 for i in range(len(joltit))])
+    
+    for i in range(len(joltit)):
+        for r in napit:
+            matriisi[i].append(1 if i in r else 0)
+    
+    return matriisi, joltit
 
 def vahimmat_painallukset(kone: dict) -> int:
     painalluksia_vahintaan = max(kone["joltit"])
@@ -43,7 +55,16 @@ def vahimmat_painallukset(kone: dict) -> int:
                 jannitteet = [0 for _ in range(len(kone["joltit"]))]
     raise EOFError("Ei löytynyt toimivaa nappiyhdistelmää")
             
+def koneratkaisu(matriisit: list, joltit: list) -> int:
+    pass
+
+def backtrackaa(matriisit: list, joltit: list) -> int:
+    pass
+
 koneet = lue("input.txt")
+for kone in koneet:
+    matriisi, joltit = matriisiksi(kone["napit"], kone["joltit"])
+    
 
 painalluksia = 0
 for kone in koneet:
