@@ -1,3 +1,3 @@
-def pitkanimi(joo: str, hoo: list[int]):
-    return joo + "".join(str(i) for i in hoo)
-print(pitkanimi("jooasfasf", [4, 5, 6]))
+with open("alku.txt", encoding="utf-8") as f:
+    for r in f:
+        print(r.strip(), end=", ")

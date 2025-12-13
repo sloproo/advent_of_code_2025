@@ -8,51 +8,42 @@ def avaa(tiedosto: str) -> dict:
 def pitkanimi(portti: str, dacfft: list[int]):
     return portti + "".join([str(i) for i in dacfft])
 
-def syvemmalle(portti: str, portit: dict, ratkaistut: dict, kaydyt: list, 
-               dacfft: list[int]) -> tuple[int, dict]:
-    reitteja = 0
-    if portti == "dac":
-        dacfft[0] = 1
-    elif portti == "fft":
-        dacfft[1] = 1
-    nyk_pitka = pitkanimi(portti, dacfft)
-    kaydyt.append(nyk_pitka)
+def syvemmalle(portti: str, portit: dict, ratkaistut: dict, kaydyt: list) -> tuple[int, dict]:
+    uudet_kaydyt = kaydyt.copy()
+    uudet_kaydyt.append(portti)
+    dac_kayty = "dac" in uudet_kaydyt
+    fft_kayty = "fft" in uudet_kaydyt
+
+    portti_statuksella = str((portti, dac_kayty, fft_kayty))
+    if portti_statuksella in ratkaistut:
+        return (ratkaistut[portti_statuksella], ratkaistut)
     if portti == "out":
-        if dacfft == [1, 1]:
-            reitteja += 1
-            print(f"Löytyi kunnon reitti {kaydyt}")
+        # print(f"Maalissa, reitti takana: {uudet_kaydyt}")
+        if (dac_kayty and fft_kayty):
+            reitteja = 1
+            # print(f"Oli fft ja dac, lisätään 1")
         else:
-            reitteja += 0
-            # print(f"Lopussa muttei dacfft {kaydyt}")
-        
-        return (reitteja, ratkaistut)
+            reitteja = 0
+     
     else:
+        reitteja = 0
         for maali in portit[portti]:
-            if portti == "out":
-                pass
-            pitka = pitkanimi(maali, dacfft)
-            if pitka in ratkaistut:
-                reitteja += ratkaistut[pitka]
-            if pitka in kaydyt:
+            if maali in uudet_kaydyt:
                 continue
             else:
-                reitteja, ratkaistut = syvemmalle(maali, portit, ratkaistut, kaydyt, dacfft)
-                
-    ratkaistut[pitka] = reitteja
+                uusia, ratkaistut = syvemmalle(maali, portit, ratkaistut, uudet_kaydyt)
+                reitteja += uusia
+    ratkaistut[portti_statuksella] = reitteja
+    # print(f"Ratkaistu on {str(uudet_kaydyt)}: {ratkaistut[str(uudet_kaydyt)]}")
     return (reitteja, ratkaistut)
 
-portit = avaa("alku2.txt")
-kaydyt = [("svr00")]
+portit = avaa("input.txt")
+kaydyt = ["svr"]
 reitteja = 0
 ratkaistut = {}
-dacfft = [0, 0]
-# Halutut portit: "dac" ja "fft"
 
-for portti in portit["svr"]:
-    uusia_reitteja, ratkaistut = syvemmalle(portti, portit, ratkaistut, kaydyt, [0, 0])
-    reitteja += uusia_reitteja
+for portti in portit[kaydyt[0]]:
+    uusiareitteja, ratkaistut = syvemmalle(portti, portit, ratkaistut, kaydyt)
+    reitteja += uusiareitteja
 
 print(reitteja)
-
-# 22 väärin
-# 316 liian matala
