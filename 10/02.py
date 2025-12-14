@@ -1,4 +1,5 @@
 from functools import cache
+import math
 
 def lue(tiedosto: str) -> list:
     koneet = []
@@ -22,6 +23,7 @@ def matriisiksi(napit: list[list[int]], joltit: list[int]) -> tuple[tuple[tuple[
     matriisi = []
     for nappi in napit:
         matriisi.append(tuple(1 if i in nappi else 0 for i in range(len(joltit))))
+
     
     return tuple(sorted(matriisi, key= sum, reverse=True)), tuple(joltit)
 
@@ -62,12 +64,32 @@ def backtrackaa(i: int, joltit: tuple[int, ...]) -> float:
         max_vektoria = 0
 
     paras_tulos = float("inf")
+
+    seuraava_teho = vektorien_summat[i+1] if (i + 1) < len(vektorien_summat) else 0
+
     for n in range(max_vektoria, -1, -1):
+        if n >= paras_tulos:
+            continue
+        
         seuraavat_joltit = vahenna_jolteista(joltit, vektorit[i], n)
         
         arvioitu_minimi_loppu = max(seuraavat_joltit) if seuraavat_joltit else 0
-        if n + arvioitu_minimi_loppu >= paras_tulos:
+        
+        # 2. UUSI ARVIO (Massa)
+        # Lasketaan: Jolttien summa / Tehokkaimman jäljellä olevan vektorin summa
+        if seuraava_teho > 0:
+            arvioitu_massa = math.ceil(sum(seuraavat_joltit) / seuraava_teho)
+        else:
+            # Jos tehoa ei ole (0), mutta joltteja on -> mahdoton
+            arvioitu_massa = float('inf') if any(seuraavat_joltit) else 0
+
+        # Otetaan tiukempi (suurempi) näistä kahdesta
+        lopullinen_arvio = max(arvioitu_minimi_loppu, arvioitu_massa)
+
+        # Tarkistus
+        if n + lopullinen_arvio >= paras_tulos:
             continue
+        
         
         loppuosan_tulos = backtrackaa(i + 1, seuraavat_joltit)
         if n + loppuosan_tulos < paras_tulos:
@@ -75,11 +97,12 @@ def backtrackaa(i: int, joltit: tuple[int, ...]) -> float:
     return paras_tulos
     
 
-koneet = lue("alku2.txt")
+koneet = lue("input.txt")
 ratkaisuja = 0
 kone_i = 1
 for kone in koneet:
     vektorit, joltit = matriisiksi(kone["napit"], kone["joltit"])
+    vektorien_summat = tuple(sum(v) for v in vektorit)
     riittavyys_kartta = luo_riittavyys_kartta(vektorit, len(joltit))
     backtrackaa.cache_clear()
     koneen_paras_ratkaisu = float("inf")
