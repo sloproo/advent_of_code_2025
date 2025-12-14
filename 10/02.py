@@ -1,4 +1,3 @@
-import itertools
 from functools import cache
 
 def lue(tiedosto: str) -> list:
@@ -29,41 +28,30 @@ def matriisiksi(napit: list[list[int]], joltit: list[int]) -> tuple[tuple[tuple[
 def vahenna_jolteista(joltit: tuple[int, ...], vektori: tuple[int, ...], kerroin: int =1):
     return tuple(j - kerroin * v for j, v in zip(joltit, vektori))
 
-def vahimmat_painallukset(kone: dict) -> int:
-
-    painalluksia_vahintaan = max(kone["joltit"])
-    for i in range(painalluksia_vahintaan, 1000):
-        kokeiltavat_yhdistelmat = list(itertools.combinations_with_replacement(kone["napit"], i))
-        jannitteet = [0 for _ in range(len(kone["joltit"]))]
-        for nappiyhdistelma in kokeiltavat_yhdistelmat:
-            painettavat_napit = set([luku for nappi in nappiyhdistelma for luku in nappi])
-            nousevat_joltit = set(j for j in range(len(kone["joltit"])) if kone["joltit"][j] != 0)
-            if painettavat_napit != nousevat_joltit:
-                continue
-            for nappi in nappiyhdistelma:
-                for luku in nappi:
-                    jannitteet[luku] += 1
-                    if jannitteet[luku] > kone["joltit"][luku]:
-                        break
-                break
-            
-            if jannitteet == kone["joltit"]:
-                print(f"Ratkaistu kone, jossa oli {len(kone['joltit'])} patteria")
-                print(f"painalluksia vaadittiin {i}")
-                return i
+def luo_riittavyys_kartta(vektorit: tuple[tuple[int, ...]], ulottuvuuksia: int) -> tuple[tuple[int, ...]]:
+    ulottuvuudet = []
+    for i in range(len(vektorit) -1, -1, -1):
+        tasta_eteenpain = []
+        for j in range(ulottuvuuksia):
+            for v in vektorit[i:]:
+                if v[j] >= 1:
+                    tasta_eteenpain.append(1)
+                    break
             else:
-                jannitteet = [0 for _ in range(len(kone["joltit"]))]
-    raise EOFError("Ei löytynyt toimivaa nappiyhdistelmää")
+                tasta_eteenpain.append(0)
+        ulottuvuudet.append(tuple(tasta_eteenpain))
+    return tuple(reversed(ulottuvuudet))
             
 @cache
 def backtrackaa(i: int, joltit: tuple[int, ...]) -> float:
     if all(x == 0 for x in joltit):
         return 0.0
-    if i > len(vektorit):
+    if i >= len(vektorit):
         return float("inf")
+    for m, j in zip(riittavyys_kartta[i], joltit):
+        if j > 0 and m == 0:
+            return float("inf")
     
-    paras_tulos = float("inf")
-
     max_vektoria = float("inf")
     for v, j in zip(vektorit[i], joltit):
         if v > j:
@@ -73,22 +61,33 @@ def backtrackaa(i: int, joltit: tuple[int, ...]) -> float:
     if type(max_vektoria) != int:
         max_vektoria = 0
 
+    paras_tulos = float("inf")
     for n in range(max_vektoria, -1, -1):
         seuraavat_joltit = vahenna_jolteista(joltit, vektorit[i], n)
-        taman_tulos = min(paras_tulos, backtrackaa(i + 1, seuraavat_joltit))
-        taman_tulos += n
-        paras_tulos = min(taman_tulos, paras_tulos)
+        
+        arvioitu_minimi_loppu = max(seuraavat_joltit) if seuraavat_joltit else 0
+        if n + arvioitu_minimi_loppu >= paras_tulos:
+            continue
+        
+        loppuosan_tulos = backtrackaa(i + 1, seuraavat_joltit)
+        if n + loppuosan_tulos < paras_tulos:
+            paras_tulos = n + loppuosan_tulos
     return paras_tulos
     
 
-koneet = lue("alku.txt")
+koneet = lue("alku2.txt")
 ratkaisuja = 0
+kone_i = 1
 for kone in koneet:
     vektorit, joltit = matriisiksi(kone["napit"], kone["joltit"])
+    riittavyys_kartta = luo_riittavyys_kartta(vektorit, len(joltit))
+    backtrackaa.cache_clear()
     koneen_paras_ratkaisu = float("inf")
     koneen_ratkaisu = backtrackaa(0, joltit)
-    koneen_paras_ratkaisu = min(koneen_paras_ratkaisu, koneen_ratkaisu)
+    koneen_paras_ratkaisu = int(min(koneen_paras_ratkaisu, koneen_ratkaisu))
     ratkaisuja += koneen_paras_ratkaisu
-    print(f"Napin painalluksia tähän asti käsitellyistä koneista on {ratkaisuja}")
+    print(f"Koneen {kone_i} lyhyin ratkaisu ottaa {koneen_paras_ratkaisu} napinpainallusta")
+    kone_i += 1
+print(f"Napin painalluksia kaikkien koneiden parhaista ratkaisuista tuli {ratkaisuja}")
 
 
