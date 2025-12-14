@@ -28,7 +28,12 @@ for pala in palat:
     ruutumaarat.append(ruudut)
 ruutumaarat = tuple(ruutumaarat)
 
+mahtuvia = 0
+tukkeutuvia = 0
 for kuusi in kuuset:
     tilaa = kuusi[0][0] * kuusi[0][1]
-    ruutuja_vaaditaan = ruutumaarat[i] * 
+    ruutuja_vaaditaan = sum(ruutumaarat[i] * kuusi[1][i] for i in range(len(ruutumaarat)))
+    mahtuvia += 1 if ruutuja_vaaditaan <= tilaa else tukkeutuvia += 1
 
+print(f"Lahjat mahtuivat {mahtuvia} kuusen alle.")
+print(f"Lahjat eivät mahtunee {tukkeutuvia} kuusen alle.")
