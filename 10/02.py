@@ -1,5 +1,4 @@
 import itertools
-from ortools.linear_solver import pywraplp
 from functools import cache
 
 def lue(tiedosto: str) -> list:
@@ -27,7 +26,11 @@ def matriisiksi(napit: list[list[int]], joltit: list[int]) -> tuple[tuple[tuple[
     
     return tuple(sorted(matriisi, key= sum, reverse=True)), tuple(joltit)
 
+def vahenna_jolteista(joltit: tuple[int, ...], vektori: tuple[int, ...], kerroin: int =1):
+    return tuple(j - kerroin * v for j, v in zip(joltit, vektori))
+
 def vahimmat_painallukset(kone: dict) -> int:
+
     painalluksia_vahintaan = max(kone["joltit"])
     for i in range(painalluksia_vahintaan, 1000):
         kokeiltavat_yhdistelmat = list(itertools.combinations_with_replacement(kone["napit"], i))
@@ -53,35 +56,38 @@ def vahimmat_painallukset(kone: dict) -> int:
     raise EOFError("Ei löytynyt toimivaa nappiyhdistelmää")
             
 @cache
-def backtrackaa(indeksi: int, vektorit: tuple[tuple[int, ...], ...], joltit: tuple[int, ...]) -> float:
+def backtrackaa(i: int, joltit: tuple[int, ...]) -> float:
     if all(x == 0 for x in joltit):
         return 0.0
+    if i > len(vektorit):
+        return float("inf")
+    
     paras_tulos = float("inf")
+
     max_vektoria = float("inf")
     for v, j in zip(vektorit[i], joltit):
-        if v > 0 and j // v > 0:
+        if v > j:
+            max_vektoria = 0
+        elif v > 0 and j // v > 0:
             max_vektoria = min(j // v, max_vektoria)
-    for n in range(max_vektoria, )
+    if type(max_vektoria) != int:
+        max_vektoria = 0
 
-    for vektori in vektorit:
-        uudet_joltit = tuple(j - v for v, j in zip(vektori, joltit))
-        if any(x < 0 for x in uudet_joltit):
-            continue
-        paras_tulos = backtrackaa(vektorit, uudet_joltit)
-
-        uusi_kokonaisuus = 1.0 + paras_tulos
-        paras_tulos = min(uusi_kokonaisuus, paras_tulos)
+    for n in range(max_vektoria, -1, -1):
+        seuraavat_joltit = vahenna_jolteista(joltit, vektorit[i], n)
+        taman_tulos = min(paras_tulos, backtrackaa(i + 1, seuraavat_joltit))
+        taman_tulos += n
+        paras_tulos = min(taman_tulos, paras_tulos)
     return paras_tulos
     
 
-koneet = lue("input.txt")
+koneet = lue("alku.txt")
 ratkaisuja = 0
 for kone in koneet:
-    matriisi, joltit = matriisiksi(kone["napit"], kone["joltit"])
+    vektorit, joltit = matriisiksi(kone["napit"], kone["joltit"])
     koneen_paras_ratkaisu = float("inf")
-    for i in range(len(joltit)):
-        koneen_ratkaisu = backtrackaa(i, matriisi, joltit)
-        koneen_paras_ratkaisu = min(koneen_paras_ratkaisu, koneen_ratkaisu)
+    koneen_ratkaisu = backtrackaa(0, joltit)
+    koneen_paras_ratkaisu = min(koneen_paras_ratkaisu, koneen_ratkaisu)
     ratkaisuja += koneen_paras_ratkaisu
     print(f"Napin painalluksia tähän asti käsitellyistä koneista on {ratkaisuja}")
 
