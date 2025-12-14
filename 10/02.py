@@ -25,7 +25,7 @@ def matriisiksi(napit: list[list[int]], joltit: list[int]) -> tuple[tuple[tuple[
     for nappi in napit:
         matriisi.append(tuple(1 if i in nappi else 0 for i in range(len(joltit))))
     
-    return tuple(matriisi), tuple(joltit)
+    return tuple(sorted(matriisi, key= sum, reverse=True)), tuple(joltit)
 
 def vahimmat_painallukset(kone: dict) -> int:
     painalluksia_vahintaan = max(kone["joltit"])
@@ -52,28 +52,37 @@ def vahimmat_painallukset(kone: dict) -> int:
                 jannitteet = [0 for _ in range(len(kone["joltit"]))]
     raise EOFError("Ei löytynyt toimivaa nappiyhdistelmää")
             
-def koneratkaisu(matriisit: list, joltit: list) -> int:
-    pass
-
 @cache
-def backtrackaa(vektorit: tuple[tuple[int, ...], ...], joltit: tuple[int, ...]) -> float:
+def backtrackaa(indeksi: int, vektorit: tuple[tuple[int, ...], ...], joltit: tuple[int, ...]) -> float:
     if all(x == 0 for x in joltit):
         return 0.0
-    else:
-        uudet_joltit = # ...
-    for vektori in vektorit:
-        if all(joltit)
+    paras_tulos = float("inf")
+    max_vektoria = float("inf")
+    for v, j in zip(vektorit[i], joltit):
+        if v > 0 and j // v > 0:
+            max_vektoria = min(j // v, max_vektoria)
+    for n in range(max_vektoria, )
 
-koneet = lue("input.txt")
-for kone in koneet:
-    matriisi, joltit = matriisiksi(kone["napit"], kone["joltit"])
-    ratkaisuja = backtrackaa(matriisi, joltit)
+    for vektori in vektorit:
+        uudet_joltit = tuple(j - v for v, j in zip(vektori, joltit))
+        if any(x < 0 for x in uudet_joltit):
+            continue
+        paras_tulos = backtrackaa(vektorit, uudet_joltit)
+
+        uusi_kokonaisuus = 1.0 + paras_tulos
+        paras_tulos = min(uusi_kokonaisuus, paras_tulos)
+    return paras_tulos
     
 
-painalluksia = 0
+koneet = lue("input.txt")
+ratkaisuja = 0
 for kone in koneet:
-    painalluksia += vahimmat_painallukset(kone)
-print(f"Kaikkien koneiden kaikkien lamppujen sytyttämiseen riittää " +
-      f"{painalluksia} napinpainallusta")
-print(f"Eli siis {painalluksia}\n")
-print(painalluksia)
+    matriisi, joltit = matriisiksi(kone["napit"], kone["joltit"])
+    koneen_paras_ratkaisu = float("inf")
+    for i in range(len(joltit)):
+        koneen_ratkaisu = backtrackaa(i, matriisi, joltit)
+        koneen_paras_ratkaisu = min(koneen_paras_ratkaisu, koneen_ratkaisu)
+    ratkaisuja += koneen_paras_ratkaisu
+    print(f"Napin painalluksia tähän asti käsitellyistä koneista on {ratkaisuja}")
+
+
